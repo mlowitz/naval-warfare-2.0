@@ -11,6 +11,7 @@
 
 
 int IP = 0;
+char *user_ip;
 int sockfd = 0, n = 0;
 char Buff[6];
 struct sockaddr_in serv_addr;
@@ -713,104 +714,45 @@ int main(int argc, const char * argv[])
                 return 1;
             }
             
-           /* while ( (n = read(sockfd, Buff, sizeof(Buff)-1)) > 0)
-            {
-                Buff[n] = 0;
-                if(fputs(Buff, stdout) == EOF)
-                {
-                    printf("\n Error : Fputs error\n");
-                }
-            }*/
-        
-        // make IP Address 127.0.0.1
+          
         
         startGame();
         }
         
         if (num==2)
         {
+	  char* user_IP;
             printf("Please enter an IP Address\n");
             
-            scanf(" %d", &IP);
-            while (isdigit(IP) && IP>0)        // has some isues
+            scanf(" %s", user_IP);
+            /*while (isdigit(IP) && IP>0)        // has some isues
             {
                 printf("Please enter an IP Address\n");
                 
-                scanf(" %d", &IP);
-            }
+                scanf(" %s", &IP);
+		}*/
             play_num=2;
+            IP=atoi(user_IP);
             
-            
-            memset(Buff, '0',sizeof(Buff));
+           
             if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
             {
                 printf("\n Error : Could not create socket \n");
                 return 1;
             }
-            
+           
+	    memset(&serv_addr,0,sizeof(serv_addr));
             serv_addr.sin_family = AF_INET;
-            serv_addr.sin_port = htons(5000);
+            serv_addr.sin_port = htons(5001);
             
             if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
             {
                 printf("\n Error : Connect Failed \n");
                 return 1;
             }
+	    startGame();
             
-            while ( (n = read(sockfd, Buff, sizeof(Buff)-1)) > 0)
-            {
-                Buff[n] = 0;
-                if(fputs(Buff, stdout) == EOF)
-                {
-                    printf("\n Error : Fputs error\n");
-                }
-            }
-            
-            
-            
-            // join server function
-            // join host
-        }
-        
-        /*  Set the remote port  */
-        
-        port = strtol(szPort, &endptr, 0);      // unrecognizable function
-        if ( *endptr ) {
-            printf("ECHOCLNT: Invalid port supplied.\n");
-            exit(EXIT_FAILURE);
-        }
-        
-        
-        /*  Create the listening socket  */
-        
-        if ( (conn_s = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
-            fprintf(stderr, "ECHOCLNT: Error creating listening socket.\n");
-            exit(EXIT_FAILURE);
-        }
-        
-        
-        /*  Set all bytes in socket address structure to
-         zero, and fill in the relevant data members   */
-        
-        memset(&servaddr, 0, sizeof(servaddr));
-        servaddr.sin_family      = AF_INET;
-        servaddr.sin_port        = htons(port);
-        
-        
-        /*  Set the remote IP address  */
-        
-        if ( inet_aton(szAddress, &servaddr.sin_addr) <= 0 ) {
-            printf("ECHOCLNT: Invalid remote IP address.\n");
-            exit(EXIT_FAILURE);
-        }
-        
-        
-        /*  connect() to the remote echo server  */
-        
-        if ( connect(conn_s, (struct sockaddr *) &servaddr, sizeof(servaddr) ) < 0 ) {
-            printf("ECHOCLNT: Error calling connect()\n");
-            exit(EXIT_FAILURE);
-        }
+	}
         
         if (num==3)
         {
