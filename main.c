@@ -191,18 +191,17 @@ void  board_get(board *board)
      n = n->nxt;*/
     if (player_num[1]=='\001')
     {
-		 if (!n->P1)
-			 strcpy(buf, '0');
+		 if (!n->P2)
+			 rBuff[0]= '0';
 		 else
-        //return player1
-		 strcpy(buf, n->P1);
+		   rBuff[0]=n->P2;
     }
     else if(player_num[1]=='\002')
     {
-		 if (!n->P2)
+		 if (!n->P1)
 			 rBuff[0]='0';
 		 else
-			rBuff[0]='0';
+			rBuff[0]=n->P1;
        //retrun player 2
     }
     
@@ -372,7 +371,7 @@ int  main() {
 		error("ERROR on binding");
     
 	/* listen: make it a listening socket ready to accept connection requests */
-	if (listen(listenfd, 5) < 0) /* allow 5 requests to queue up */
+	if (listen(listenfd, 25) < 0) /* allow 5 requests to queue up */
 		error("ERROR on listen");
     
 	/* main loop: wait for a connection request, echo input line,
