@@ -85,7 +85,7 @@ void board_add(board *board)
 {
     if (!board) return;
     
-    unsigned long idx = _hash(position) % board->size;
+    unsigned long idx = position;
     struct square *n = board->tbl[idx];
     while (n) {
         if (strcmp(position, n->position) == 0) {
@@ -94,13 +94,13 @@ void board_add(board *board)
             {
                 n->P1= calloc(1, strlen(shipnum)
                               + 1);//creates plaer 1
-                strcpy(n->P1,shipnum);
+                strcpy(n->P1,shipnum[0]);
             }
             if(player_num[1]=='2')
             {
                 n->P2= calloc(1,
                               strlen(shipnum) +1);
-                strcpy(n->P2,shipnum);
+                strcpy(n->P2,shipnum[0]);
             }
             
             break;
@@ -189,14 +189,14 @@ void  board_get(board *board)
     /* while (n) {
      return n->val;
      n = n->nxt;*/
-    if (player_num[1]=='\001')
+    if (player_num[1]=='\002')
     {
 		 if (!n->P2)
 			 rBuff[0]= '0';
 		 else
 		   rBuff[0]=n->P2;
     }
-    else if(player_num[1]=='\002')
+    else if(player_num[1]=='\001')
     {
 		 if (!n->P1)
 			 rBuff[0]='0';

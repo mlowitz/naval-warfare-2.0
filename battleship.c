@@ -749,7 +749,12 @@ int main(int argc, const char * argv[])
 	    memset(&serv_addr,0,sizeof(serv_addr));
             serv_addr.sin_family = AF_INET;
             serv_addr.sin_port = htons(5001);
-            
+            if(inet_aton(user_IP, &serv_addr.sin_addr)<=0)
+	      {
+		printf("\n inet_pton error occured\n");
+		return 1;
+	      }
+
             if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
             {
                 printf("\n Error : Connect Failed \n");
