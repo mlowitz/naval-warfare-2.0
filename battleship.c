@@ -599,7 +599,7 @@ int displayMenu()
     }
         if (num==1 && started)
         {
-        printf("You started a game. One game can be played at a time");
+        printf("You started a game. One game can be played at a time\n");
         }
     else if (num==2 && started)
     {
@@ -619,11 +619,7 @@ int displayMenu()
         deleteBoard(searchBoard);
         return 0;
     }
-    else if (num==4)
-    {
-        return 0;       // return to server menu
-    }
-    
+  
     else if (num==4)
     {
         deleteBoard(bat);
@@ -644,6 +640,10 @@ int startGame(void)
     
     do {
         num=displayMenu();
+        if (num==4)
+        {
+            exit(0);
+        }
     } while (num==2);
     num = displayMenu();
     return num;
@@ -660,6 +660,11 @@ int MainMenu()
         printf("2: Join Server\n");
         printf("3: Display the introduction again\n");
         printf("4: Quit\n\n\n");
+        
+        if (response==4)
+        {
+            exit(0);
+        }
         
     }
     while (response>5 || response<0);
@@ -757,6 +762,11 @@ int main(int argc, const char * argv[])
         if (num==3)
         {
             introduction();
+        }
+        
+        if (num==5)
+        {
+            exit(0);
         }
         
     } while(num<4);
