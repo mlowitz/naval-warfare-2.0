@@ -468,9 +468,9 @@ void doprocessing(int sock, board *board)
 	      
       
       /*write to game contents */
-      n = write(sock, rBuff, 2);
-      	  	      
-      if (n < 0)
+    n = write(sock, rBuff, 2);
+    printf("writing");  	  	      
+     if (n < 0)
 	error("ERROR writing to socket");
     }   
   exit(1);
