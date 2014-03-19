@@ -27,11 +27,12 @@ char     *endptr;                /*  for strtol()              */
 int play_num;
 char ** bat, ** searchBoard;
 bool started=false;
-int p1=0;
-int p2=0;
-int p3=0;
-int p4=0;
-
+int p1=0;//ship 1 
+int p2=0;//ship 2 
+int p3=0;//ship 3 
+int p4=0;//ship 4  
+int p5=0;//ship 5
+int sunk=0;//number of ships sank 
 bool shipexists()
 {
     return true;
@@ -112,10 +113,10 @@ bool placevalid(int x, int y, bool is_vertical, int length, char ** board)
             {
               board[ii][x]=length;
                 Buff[0]='W';
-					 Buff[1]=length;
+		Buff[1]=length;
                 Buff[2]=ii;
                 Buff[3]=x;
-					 Buff[4]='P';
+		Buff[4]='P';
                 Buff[5]=play_num;
                 Writeline(sockfd, Buff, 6);
                 
@@ -393,29 +394,55 @@ bool PieceExists(int y, int x)
     {
       printf("HIT!\n"); //retruns hit 
       
-        if (Buff[0]=='1')
+        if (Buff[0]=='5')
         {
             p1++;
 	    if (p1 = 5)
-	      printf("sunk something");
+	      {
+		printf("sunk Aircraftcarrier");
+		sunk++;
+	      }
         }
         if (Buff[0]=='2')
         {
             p2++;
-	    if(p2 = 4)
-	      printf("sunk something");
+	    if(p2 = 2){
+	      sunk++;
+	      printf("sunk patrol boat!\n");
+	    }
         }
         if (Buff[0]=='3')
         {
             p3++;
-	    if(p2=3)
-	      printf("sunk something");
+	    if(p2=3){
+	      printf("sunk submarien\n");
+	      sunk++;
+	    }
         }
         if (Buff[0]=='4')
-        {
+	  {
             p4++;
-	    printf("sunk somthing");
+	    if(p4 = 4)
+	      {
+		printf("sunk battleship ");
+		sunk++;
+	      }
+	    
         }
+	if(Buff[0]=='1')
+	  {
+	    p5++;
+	    if(p5 = 3)
+	      {
+		printf("sunk destoryer!\n");
+		sunk++;
+	      }
+	  }
+	if(sunk = 5)
+	  {
+	    printf(" YOU WON!!!!\n");
+	  }
+
         return true;
     }
     else return false;
