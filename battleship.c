@@ -374,10 +374,32 @@ bool PieceExists(int y, int x)
     Buff[4]='P'; 
     if (searchBoard[x][y]!='-')
         return true;
+	 if (sockfd>0)
+		 close(sockfd);
+	if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+            {
+                printf("\n Error : Could not create socket \n");
+                return 1;
+            }
+            
+				memset(&serv_addr, 0, sizeof(serv_addr));
+            serv_addr.sin_family = AF_INET;
+            serv_addr.sin_port = htons(5001);
+            if(inet_aton(user_ip, &serv_addr.sin_addr)<=0)
+	      {
+		printf("\n inet_pton error occured\n");
+		return 1;
+	      }
+            if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+            {
+                printf("\n Error : Connect Failed \n");
+                return 1;
+            }
     write(sockfd,Buff, 6); //check board for move 
 
-    read(sockfd, rBuff, sizeof(rBuff)); //read back result from board 
-	  /* {
+    read(sockfd, rBuff, 2); //read back result from board 
+	 close(sockfd); 
+	 /* {
 	     rBuff[n] = 0;
 	     if(fputs(rBuff, stdout) == EOF)
 	       {
@@ -388,64 +410,69 @@ bool PieceExists(int y, int x)
 //Readline(sockfd, rBuff, 1);
 	if (n < 0)
 			printf("error");
-		close(sockfd);
-		
+	//	close(sockfd);
   if (rBuff[0]!='0')  /*checks if peice was a hit and if hit records on ship*/
     {
       printf("HIT!\n"); //retruns hit 
       
-        if (Buff[0]=='5')
+        if (rBuff[0]=='\005')
         {
             p1++;
-	    if (p1 = 5)
+	    if (p1 == 6)
 	      {
-		printf("sunk Aircraftcarrier");
+		printf("sunk Aircraft carrier\n");
 		sunk++;
 	      }
         }
-        if (Buff[0]=='2')
+        if (rBuff[0]=='\002')
         {
             p2++;
-	    if(p2 = 2){
+	    if(p2 == 2){
 	      sunk++;
 	      printf("sunk patrol boat!\n");
 	    }
         }
-        if (Buff[0]=='3')
+        if (rBuff[0]=='\003')
         {
             p3++;
-	    if(p2=3){
-	      printf("sunk submarien\n");
+	    if(p2==4){
+	      printf("sunk submarine\n");
 	      sunk++;
 	    }
         }
-        if (Buff[0]=='4')
+        if (rBuff[0]=='\004')
 	  {
             p4++;
-	    if(p4 = 4)
+	    if(p4 = 5)
 	      {
 		printf("sunk battleship ");
 		sunk++;
 	      }
 	    
         }
-	if(Buff[0]=='1')
+	if(rBuff[0]=='\001')
 	  {
 	    p5++;
-	    if(p5 = 3)
+	    if(p5 == 6)
 	      {
-		printf("sunk destoryer!\n");
+		printf("sunk destroyer!\n");
 		sunk++;
 	      }
 	  }
-	if(sunk = 5)
+	 }
+	else 
+	{
+		printf("Miss!\n");
+		return false;
+	}
+	 
+	if(sunk == 5)
 	  {
 	    printf(" YOU WON!!!!\n");
 	  }
 
         return true;
-    }
-    else return false;
+    
 }
 ssize_t Readline(int sockd,char Buff, int maxlen) {
     ssize_t n, rc;
@@ -490,7 +517,11 @@ ssize_t Writeline(int sockd, char  Buffk, int n) {
             
             serv_addr.sin_family = AF_INET;
             serv_addr.sin_port = htons(5001);
-            
+            if(inet_aton(user_ip, &serv_addr.sin_addr)<=0)
+	      {
+		printf("\n inet_pton error occured\n");
+		return 1;
+	      }
             if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
             {
                 printf("\n Error : Connect Failed \n");
@@ -544,18 +575,19 @@ bool attackBoard(char ** searchBoard)        // x and y are coordinates
                 Buff[2]=y;
                 Buff[30]=play_num;
                     placed=true;
-                Writeline(sockfd, Buff, strlen(Buff));
+                write(sockfd, Buff, strlen(Buff));
                 
                 return true;
                 }
-                else
-                {
+				}
+              else
+               {
                     //searchBoard[x][y]='+';
                     return false;
                 }
             }
         }
-    }
+
         while (placed==false);
     return false;
 }
@@ -714,7 +746,8 @@ int main(int argc, const char * argv[])
     int num;
     introduction();
  
-    
+    user_ip=(char*)malloc(16*sizeof(char));
+
 
     pid_t t;
     
@@ -727,7 +760,8 @@ int main(int argc, const char * argv[])
             // start server function
             
            // server_fun();
-            IP=atoi("127.0.0.1");
+            
+	    user_ip=("127.0.0.1");
             
             
             if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -739,8 +773,13 @@ int main(int argc, const char * argv[])
 				memset(&serv_addr, 0, sizeof(serv_addr));
             serv_addr.sin_family = AF_INET;
             serv_addr.sin_port = htons(5001);
+            if(inet_aton(user_ip, &serv_addr.sin_addr)<=0)
+	      {
+		printf("\n inet_pton error occured\n");
+		return 1;
+	      }
             
-            if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+	    if( connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
             {
                 printf("\n Error : Connect Failed \n");
                 return 1;
@@ -753,10 +792,10 @@ int main(int argc, const char * argv[])
         
         if (num==2)
         {
-	  char* user_IP;
+	  //char* user_ip;
             printf("Please enter an IP Address\n");
             
-            scanf(" %s", user_IP);
+            scanf(" %s", user_ip);
             /*while (isdigit(IP) && IP>0)        // has some isues
             {
                 printf("Please enter an IP Address\n");
@@ -764,7 +803,7 @@ int main(int argc, const char * argv[])
                 scanf(" %s", &IP);
 		}*/
             play_num=2;
-            IP=atoi(user_IP);
+            
             
            
             if((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -776,7 +815,7 @@ int main(int argc, const char * argv[])
 	    memset(&serv_addr,0,sizeof(serv_addr));
             serv_addr.sin_family = AF_INET;
             serv_addr.sin_port = htons(5001);
-            if(inet_aton(user_IP, &serv_addr.sin_addr)<=0)
+            if(inet_aton(user_ip, &serv_addr.sin_addr)<=0)
 	      {
 		printf("\n inet_pton error occured\n");
 		return 1;
@@ -796,7 +835,7 @@ int main(int argc, const char * argv[])
             introduction();
         }
         
-        if (num==5)
+        if (num==4)
         {
             exit(0);
         }

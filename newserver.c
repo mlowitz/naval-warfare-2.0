@@ -18,7 +18,7 @@ char shipnum[2];
 char player_num[2];
 char buf[BUFSIZE]; /* message buffer */
 char position[2];
-char rBuff[1];
+char rBuff[2];
 
 #if 0
 /*
@@ -400,7 +400,6 @@ int  main() {
 	  printf("server established connection with %s (%s)\n",
 		 hostp->h_name, hostaddrp);
 	  
-	  
 		/* read: read input string from the client */
 		/*code to allow for multiple connections*/
 		//create child process 
@@ -463,9 +462,6 @@ void doprocessing(int sock, board *board)
       parsePosition(buf);//get position
       board_get(board);/*get contents of square*/
       
-      
-      
-	      
       
       /*write to game contents */
     n = write(sock, rBuff, 2);
