@@ -318,11 +318,10 @@ int  server_fun() {
 	char *hostaddrp; /* dotted decimal host addr string */
 	int optval; /* flag value for setsockopt */
 	int n; /* message byte size */
-	//pid_t pid=fork();
+	pid_t pid;
 
 	if (fork() ==0)
 	 {
-	   //kill (getpid(), 9);
 	/* check command line args */
 	//setsockopt(SO_REUSEADDR);
 	portno = 5001;
@@ -455,7 +454,7 @@ int  server_fun() {
 	 }
 	else{
 	  //killing parent 
-	 exit(0);
+	  exit(0);
 	    }
 }
 

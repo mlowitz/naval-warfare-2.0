@@ -22,8 +22,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <ctype.h>
-//#include "boardserver.c"
-
+#include "server.c"
 #define Ship_Size 10
 
 enum ship_piece {patrol_boat=5, destroyer=4, submarine=3,battleship=2,aircraft_carrier=1};

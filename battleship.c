@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 rumford. All rights reserved.
 //
 
-#include <stdio.h>
 #include "battleship_header.h"
 
 
@@ -15,7 +14,7 @@ char *user_ip;
 int sockfd = 0, n = 0;
 char Buff[6];
 struct sockaddr_in serv_addr;
-char rBuff[2];
+char readBuff[2];
 
 
 int       conn_s;                /*  connection socket         */
@@ -372,7 +371,7 @@ bool PieceExists(int y, int x)
     Buff[3] =x;
     Buff[5]=checkp;
     Buff[4]='P'; 
-    if (searchBoard[x][y]!='-')
+    if (searchBoard[x][y]!='o')
         return true;
 	 if (sockfd>0)
 		 close(sockfd);
@@ -397,7 +396,7 @@ bool PieceExists(int y, int x)
             }
     write(sockfd,Buff, 6); //check board for move 
 
-    read(sockfd, rBuff, 2); //read back result from board 
+    read(sockfd, readBuff, 2); //read back result from board 
 	 close(sockfd); 
 	 /* {
 	     rBuff[n] = 0;
@@ -411,11 +410,11 @@ bool PieceExists(int y, int x)
 	if (n < 0)
 			printf("error");
 	//	close(sockfd);
-  if (rBuff[0]!='0')  /*checks if peice was a hit and if hit records on ship*/
+  if (readBuff[0]!='0')  /*checks if peice was a hit and if hit records on ship*/
     {
       printf("HIT!\n"); //retruns hit 
       
-        if (rBuff[0]=='\005')
+        if (readBuff[0]=='\005')
         {
             p1++;
 	    if (p1 == 6)
@@ -424,7 +423,7 @@ bool PieceExists(int y, int x)
 		sunk++;
 	      }
         }
-        if (rBuff[0]=='\002')
+        if (readBuff[0]=='\002')
         {
             p2++;
 	    if(p2 == 2){
@@ -432,7 +431,7 @@ bool PieceExists(int y, int x)
 	      printf("sunk patrol boat!\n");
 	    }
         }
-        if (rBuff[0]=='\003')
+        if (readBuff[0]=='\003')
         {
             p3++;
 	    if(p2==4){
@@ -440,17 +439,17 @@ bool PieceExists(int y, int x)
 	      sunk++;
 	    }
         }
-        if (rBuff[0]=='\004')
+        if (readBuff[0]=='\004')
 	  {
             p4++;
-	    if(p4 = 5)
+	    if(p4 == 5)
 	      {
 		printf("sunk battleship ");
 		sunk++;
 	      }
 	    
         }
-	if(rBuff[0]=='\001')
+	if(readBuff[0]=='\001')
 	  {
 	    p5++;
 	    if(p5 == 6)
@@ -574,7 +573,7 @@ bool attackBoard(char ** searchBoard)        // x and y are coordinates
                 Buff[1]=x;
                 Buff[2]=y;
                 Buff[30]=play_num;
-                    placed=true;
+                 placed=true;
                 write(sockfd, Buff, strlen(Buff));
                 
                 return true;
@@ -582,7 +581,8 @@ bool attackBoard(char ** searchBoard)        // x and y are coordinates
 				}
               else
                {
-                    //searchBoard[x][y]='+';
+                    searchBoard[x][y]='o';
+						  placed=false;
                     return false;
                 }
             }
@@ -759,7 +759,7 @@ int main(int argc, const char * argv[])
             play_num=1;
             // start server function
             
-           // server_fun();
+            server_fun();
             
 	    user_ip=("127.0.0.1");
             
